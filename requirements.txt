@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+
+python-dotenv
+
+qdrant-client
+
+langchain
+langchain-core
+
+langchain-mistralai
+
+mistralai
