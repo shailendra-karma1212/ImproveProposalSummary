@@ -37,12 +37,13 @@ user_prompt = read_file(
     "User_Prompt.md"
 )
 
-
 def get_summary_improvement_prompt(
     chunk_text: str,
+    section_name: str,
     previous_summary: str,
-    user_instruction: str
+    instruction: str
 ):
+
 
     return f"""
 {constitution}
@@ -67,15 +68,22 @@ PREVIOUS SUMMARY
 
 USER INSTRUCTION
 
-{user_instruction}
+{instruction}
 
 ---------------------------------
 
 Rules:
+1. The RETRIEVED CHUNK is the ONLY valid source of information.
+2. NEVER use external knowledge.
+3. NEVER use model training knowledge.
+4. NEVER use browser knowledge.
+5. NEVER infer facts not explicitly present in the chunk.
+6. NEVER add company information, tender information, dates, values, requirements, qualifications, certifications, or assumptions that are not present in the chunk.
+7. The PREVIOUS SUMMARY is context only and may be corrected if it conflicts with the retrieved chunk.
+8. Apply the USER INSTRUCTION strictly.
+9. Maintain professional tender language.
+10. If requested information is not available in the chunk, do not invent it.
+11. Every statement in the final summary must be traceable to the retrieved chunk.
+12. Ignore any knowledge outside the retrieved chunk.
 
-1. Use chunk as source of truth.
-2. Do not hallucinate.
-3. Do not invent facts.
-4. Improve summary.
-5. Return only final summary.
 """

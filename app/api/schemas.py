@@ -5,7 +5,8 @@ class ImproveSummaryRequest(BaseModel):
     companyId: str
     tenderId: str
     documentId: str
-    RelatedSection: str
+    sectionName: str
+    # RelatedSection: str
     previousSummary: str
     instruction: str
 

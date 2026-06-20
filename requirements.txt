@@ -11,3 +11,9 @@ langchain-core
 langchain-mistralai
 
 mistralai
+
+langchain-openai
+ openai
+
+
+langchain

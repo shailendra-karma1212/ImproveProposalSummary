@@ -1,81 +1,81 @@
 import os
 
 from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
+from app.infrastructure.log.agent_logger import AgentLogger
 
-from langchain_mistralai import ChatMistralAI
 
-from app.infrastructure.prompt.prompt import (
-    get_summary_improvement_prompt
-)
+from app.infrastructure.prompt.prompt import get_summary_improvement_prompt
+
+from app.utility.log import setup_logger
 
 load_dotenv()
+
+logger = setup_logger(__name__)
 
 
 class LLMService:
 
     def __init__(self):
 
-        self.llm = ChatMistralAI(
-            model="mistral-large-latest",
-            api_key=os.getenv(
-                "MISTRAL_API_KEY"
+        self.llm = ChatOpenAI(
+            model=os.getenv(
+                "LLM_MODEL",
+                "gpt-4.1"
             ),
-            temperature=0
+            temperature=0,
+            api_key=os.getenv(
+                "OPENAI_API_KEY"
+            )
         )
 
     def generate_improved_summary(
         self,
         chunk_text: str,
+        section_name: str,
         previous_summary: str,
-        user_instruction: str
+        instruction: str
     ):
 
-        prompt = (
-            get_summary_improvement_prompt(
-                chunk_text=chunk_text,
-                previous_summary=previous_summary,
-                user_instruction=user_instruction
+        try:
+
+            logger.info(
+                "Sending request to LLM"
             )
-        )
 
-        response = self.llm.invoke(
-            prompt
-        )
+            prompt = get_summary_improvement_prompt(
+                chunk_text=chunk_text,
+                section_name=section_name,
+                previous_summary=previous_summary,
+                instruction=instruction
+            )
 
-        return response.content
-    
-#-------------------------
+            response = self.llm.invoke(prompt)
+
+            logger.info(
+                "Summary generated successfully"
+            )
+
+            return response.content
+
+        except Exception as e:
+
+            logger.error(
+                f"LLM Error: {str(e)}"
+            )
+
+            raise
+
+
+#-----------------------------------------------------------------
 #log
-from app.utility.log import setup_logger
 
-logger = setup_logger(__name__)
-def generate_improved_summary(
-    self,
-    chunk_text,
-    previous_summary,
-    user_instruction
-):
 
-    try:
-
-        logger.info(
-            "Sending request to LLM"
-        )
-
-        response = self.llm.invoke(
-            prompt
-        )
-
-        logger.info(
-            "Summary generated successfully"
-        )
-
-        return response.content
-
-    except Exception as e:
-
-        logger.error(
-            f"LLM Error: {str(e)}"
-        )
-
-        raise
+agent_logger = AgentLogger()
+agent_logger.log_event(
+    agent_name="SummaryImprovementAgent",
+    message="Sending request to LLM",
+    event_type="LLM_REQUEST",
+    source_module="llm_service.py",
+    is_success=True
+)

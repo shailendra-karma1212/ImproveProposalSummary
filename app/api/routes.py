@@ -2,19 +2,14 @@ from fastapi import (
     APIRouter,
     HTTPException
 )
+from app.infrastructure.log.agent_logger import AgentLogger
+from app.api.schemas import ImproveSummaryRequest,ImproveSummaryResponse
 
-from app.api.schemas import (
-    ImproveSummaryRequest,
-    ImproveSummaryResponse
-)
 
-from app.services.qudrant.qudrant_service import (
-    QdrantService
-)
+from app.services.qudrant.qudrant_service import QdrantService
 
-from app.infrastructure.llm.llm_service import (
-    LLMService
-)
+
+from app.infrastructure.llm.llm_service import LLMService
 
 router = APIRouter()
 
@@ -31,15 +26,13 @@ async def improve_summary(
 ):
 
     try:
-
-        chunk_text = (
-            qdrant_service.fetch_exact_chunk(
-                company_id=payload.companyId,
-                tender_id=payload.tenderId,
-                document_id=payload.documentId,
-                RelatedSection=payload.RelatedSection
-            )
+        chunk_text = qdrant_service.fetch_combined_chunk(
+            company_id=payload.companyId,
+            tender_id=payload.tenderId,
+            document_id=payload.documentId,
         )
+
+
 
         if not chunk_text:
 
@@ -48,13 +41,13 @@ async def improve_summary(
                 detail="Chunk not found"
             )
 
-        improved_summary = (
-            llm_service.generate_improved_summary(
-                chunk_text=chunk_text,
-                previous_summary=payload.previousSummary,
-                user_instruction=payload.instruction
-            )
+        improved_summary = llm_service.generate_improved_summary(
+            chunk_text=chunk_text,
+            section_name=payload.sectionName,
+            previous_summary=payload.previousSummary,
+            instruction=payload.instruction,
         )
+
 
         return ImproveSummaryResponse(
             success=True,
@@ -68,3 +61,18 @@ async def improve_summary(
             status_code=500,
             detail=str(e)
         )
+    
+
+#-------------------------------------------------
+#loog
+from app.infrastructure.log.agent_logger import AgentLogger
+
+
+agent_logger = AgentLogger()
+agent_logger.log_event(
+    agent_name="SummaryImprovementAgent",
+    message="Request received",
+    event_type="REQUEST_RECEIVED",
+    source_module="routes.py",
+    is_success=True
+)
