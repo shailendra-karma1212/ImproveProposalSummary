@@ -44,3 +44,6 @@ log/
 .DS_Store
 Thumbs.db
 desktop.ini
+app/api/__pycache__/routes.cpython-313.pyc
+app/api/__pycache__/schemas.cpython-313.pyc
+app/services/qudrant/__pycache__/qudrant_service.cpython-313.pyc
