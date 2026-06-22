@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class ImproveSummaryRequest(BaseModel):
     companyId: str
     tenderId: str
-    documentId: str
+    # documentId: str
     sectionName: str
     # RelatedSection: str
     previousSummary: str

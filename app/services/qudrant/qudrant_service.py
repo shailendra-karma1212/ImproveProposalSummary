@@ -79,13 +79,13 @@ class QdrantService:
         self,
         company_id: str,
         tender_id: str,
-        document_id: str,
+        # document_id: str,
     ) -> list[str]:
         logger.info(
             "Searching tender chunks | "
             f"CompanyId={company_id} | "
             f"TenderId={tender_id} | "
-            f"DocumentId={document_id}"
+            # f"DocumentId={document_id}"
         )
 
         scroll_filter = models.Filter(
@@ -98,10 +98,10 @@ class QdrantService:
                     key="TenderId",
                     match=models.MatchValue(value=tender_id),
                 ),
-                models.FieldCondition(
-                    key="DocumentId",
-                    match=models.MatchValue(value=document_id),
-                ),
+                # models.FieldCondition(
+                #     key="DocumentId",
+                #     match=models.MatchValue(value=document_id),
+                # ),
             ]
         )
 
@@ -121,13 +121,13 @@ class QdrantService:
         self,
         company_id: str,
         tender_id: str,
-        document_id: str,
+        # document_id: str,
     ) -> str:
         company_chunks = self.fetch_company_chunks(company_id=company_id)
         tender_chunks = self.fetch_tender_chunks(
             company_id=company_id,
             tender_id=tender_id,
-            document_id=document_id,
+            # document_id=document_id,
         )
 
         if not company_chunks:

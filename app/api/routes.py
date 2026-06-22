@@ -29,7 +29,7 @@ async def improve_summary(
         chunk_text = qdrant_service.fetch_combined_chunk(
             company_id=payload.companyId,
             tender_id=payload.tenderId,
-            document_id=payload.documentId,
+            # document_id=payload.documentId,
         )
 
 
