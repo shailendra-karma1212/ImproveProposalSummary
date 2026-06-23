@@ -9,11 +9,12 @@ langchain
 langchain-core
 
 langchain-mistralai
-
+langchain_openai
 mistralai
 
 langchain-openai
  openai
-
-
+qdrant_client
+pymongo
 langchain
+pycryptodome
